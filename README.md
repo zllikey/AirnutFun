@@ -59,6 +59,7 @@ sensor:
 #代码请到这里寻找
 https://help.bj.cn/Weathera/20200304/320AD84ECBB0C14FBCF3518941E56179.html
 http://api.help.bj.cn/api/CityCode.XLS
+https://cdn.heweather.com/china-city-list.txt 城市代码表
 #天气每隔10分钟更新一次，可谓聊胜于无
 
 ## 其他
