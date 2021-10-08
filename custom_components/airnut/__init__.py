@@ -124,10 +124,10 @@ def get_weather():
     try:
         end_tm=datetime.datetime.now()
         if ((end_tm-start_tm).seconds) < 600 and start_tm != "":
-            print("get_weather cache")
+            #print("get_weather cache")
             return weathestate
     except:
-        print("get_weather failed")
+        #print("get_weather failed")
         _LOGGER.info("get_weather failed")
         
     
