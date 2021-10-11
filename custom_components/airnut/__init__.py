@@ -37,6 +37,11 @@ HOST_IP = "0.0.0.0"
 CONF_WEATHE_CODE = "weathe_code"
 SCAN_INTERVAL = datetime.timedelta(seconds=600)
 ZERO_TIME = datetime.datetime.fromtimestamp(0)
+weathestate= 0
+weathe_status = ""
+weathe_code = 101010100
+
+
 CONFIG_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.Schema(
@@ -57,9 +62,6 @@ _LOGGER = logging.getLogger(__name__)
 ip_data_dict = {}
 socket_ip_dict = {}
 sockfda = {}
-weathestate= 0
-weathe_status = ""
-weathe_code = 0
 
 def setup(hass, config):
     global weathe_code
@@ -69,14 +71,16 @@ def setup(hass, config):
     is_night_update = config[DOMAIN].get(CONF_IS_NIGHT_UPDATE)
     scan_interval = config[DOMAIN].get(CONF_SCAN_INTERVAL)
     weathe_code = config[DOMAIN].get(CONF_WEATHE_CODE)
-
+    
+    run_weather = threading.Thread(target=func_weather)  #新建天气循环线程
+    run_weather.start()
     
     server = AirnutSocketServer(night_start_hour, night_end_hour, is_night_update, scan_interval,weathe_code)
 
     hass.data[DOMAIN] = {
         'server': server
     }
-    
+
     return True
 
 
@@ -85,26 +89,39 @@ def func_weather():
     global weathestate
     global weathe_status
     global weathe_code
+    errcount = 0
     wet_dataA={"晴":0,"多云":1,"雨":3,"阵雨":3,"雷阵雨":3,"雷阵雨伴有冰雹":3,"雨夹雪":6,"小雨":3,"中雨":3,"大雨":3,"暴雨":3,"大暴雨":3,"特大暴雨":3,"阵雪":5,"小雪":5,"中雪":5,"大雪":5,"暴雪":5,"雾":2,"冻雨":6,"沙尘暴":2,"小雨转中雨":3,"中雨转大雨":3,"大雨转暴雨":3,"暴雨转大暴雨":3,"大暴雨转特大暴雨":3,"小雪转中雪":5,"中雪转大雪":5,"大雪转暴雪":5,"浮沉":2,"扬沙":2,"强沙尘暴":2,"霾":2}
     header = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36'}
-    res = requests.get('https://api.help.bj.cn/apis/weather/?id='+str(weathe_code),headers=header)
-    res.encoding='utf-8'
-    try:
-        jsonData = res.json()
-        print(jsonData['weather'])
-        if len(jsonData['weather']) > 0 and res.status_code==200:
+    while True:
+        res = requests.get('https://api.help.bj.cn/apis/weather/?id='+str(weathe_code),headers=header)
+        #print('https://api.help.bj.cn/apis/weather/?id='+str(weathe_code))
+        res.encoding='utf-8'
+        datayesorno = False
+        try:
+            if res.status_code==200:
+                jsonData = res.json()
+                jsonwt = jsonData['weather']
+                datayesorno = True
+                #print(jsonData)
+        except:
+            continue
+        if datayesorno:
+            print(jsonData['weather'])
             weathe_status = jsonData['weather']
             weathestate = wet_dataA[jsonData['weather']]
-    except:
-        return 0
-    if len(weathe_status)>0:
-        timer = threading.Timer(600,func_weather)
-        timer.start()
-    else:
-        timer = threading.Timer(30,func_weather)
-        timer.start()
-timer = threading.Timer(1,func_weather)
-timer.start()
+            errcount = 0
+            time.sleep(600)
+        else:
+            errcount = errcount + 1
+            if errcount >= 3:
+                errcount = 0
+                #print(res.text())
+                time.sleep(600)
+            else:
+                time.sleep(30)
+
+
+
 def get_time():
     return (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
 
