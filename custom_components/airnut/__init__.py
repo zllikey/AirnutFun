@@ -126,7 +126,7 @@ def get_time():
     return (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
 
 def get_time_unix():
-    return int((datetime.datetime.utcnow() + datetime.timedelta(hours=8)).timestamp())
+    return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
         
 async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
     hass.async_create_task(
