@@ -8,7 +8,7 @@
 4. 进行如下配置
 
 ```
-#这个是必须有的
+# 这个是必须有的
 airnut:
   #夜间是否更新
   is_night_update: False
@@ -19,7 +19,7 @@ airnut:
  #天气城市代码
   weathe_code: 101280800
   
-#ip为空气果内网的ip地址，空气果1s共四项数据，分别写四个类型的传感器
+# ip为空气果内网的ip地址，空气果1s共四项数据，分别写四个类型的传感器
 sensor:
   - platform: airnut
     ip: "10.0.0.105"
@@ -37,7 +37,7 @@ sensor:
     ip: "10.0.0.105"
     type: weathe
 
-#如果有第二个空气果，可以在下面继续，以此类推
+# 如果有第二个空气果，可以在下面继续，以此类推
   - platform: airnut
     ip: "10.0.0.xxx"
     type: temperature
@@ -56,8 +56,8 @@ sensor:
 
 
 
-#定义图标和名称
-#在customize.yaml文件插入下面几项
+# 定义图标和名称
+# 在customize.yaml文件插入下面几项
 sensor.airnut_fun_pm25:
   icon: mdi:blur
   friendly_name: 空气质量
@@ -75,25 +75,26 @@ sensor.airnut_fun_weathe:
   friendly_name: 天气
   
 ```
-#里面的城市天气代码需要改成你所在的城市代码
-#代码请到这里寻找
+## 里面的城市天气代码需要改成你所在的城市代码
+## 代码请到这里寻找
 https://help.bj.cn/Weathera/20200304/320AD84ECBB0C14FBCF3518941E56179.html
 http://api.help.bj.cn/api/CityCode.XLS
 https://cdn.heweather.com/china-city-list.txt 城市代码表
-#天气每隔10分钟更新一次，可谓聊胜于无
-#如果遇到时间不准确，或者是utc时间，请看下面
-找到项目里面的_init_.py文件，找到下面
-def get_time_unix():
-    return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
-改成
- return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
- 或者
- return int((datetime.datetime.utcnow() + datetime.timedelta(hours=8)).timestamp())
-请自行测试那一条适用，导致这个原因是docker环境或者主机环境时区问题影响,每个设备不能同时照顾
+## 天气每隔10分钟更新一次，可谓聊胜于无
 
-## 其他
-我也是修改的，没有利益关系，如有其它冲突，请告诉
+# 如果遇到时间不准确，或者是utc时间，请看下面
+## 找到项目里面的_init_.py文件，找到下面
+## def get_time_unix():
+##     return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
+## 改成
+##  return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
+## 或者
+##  return int((datetime.datetime.utcnow() + datetime.timedelta(hours=8)).timestamp())
+## 请自行测试那一条适用，导致这个原因是docker环境或者主机环境时区问题影响,每个设备不能同时照顾
 
-最后谢谢之前写airnut 1s的大佬，[原贴地址](https://github.com/billhu1996/Airnut/)
+# 其他
+### 我也是修改的，没有利益关系，如有其它冲突，请告诉
+
+### 最后谢谢之前写airnut 1s的大佬，[原贴地址](https://github.com/billhu1996/Airnut/)
 
 
