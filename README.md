@@ -54,6 +54,26 @@ sensor:
     ip: "10.0.0.xxx"
     type: weathe
 
+
+
+#定义图标和名称
+#在customize.yaml文件插入下面几项
+sensor.airnut_fun_pm25:
+  icon: mdi:blur
+  friendly_name: 空气质量
+sensor.airnut_fun_battery:
+  icon: mdi:battery
+  friendly_name: 电量
+sensor.airnut_fun_temperature:
+  icon: mdi:thermometer
+  friendly_name: 温度
+sensor.airnut_fun_humidity:
+  icon: mdi:water-percent
+  friendly_name: 湿度
+sensor.airnut_fun_weathe:
+  icon: mdi:weather-windy
+  friendly_name: 天气
+  
 ```
 #里面的城市天气代码需要改成你所在的城市代码
 #代码请到这里寻找
@@ -61,6 +81,15 @@ https://help.bj.cn/Weathera/20200304/320AD84ECBB0C14FBCF3518941E56179.html
 http://api.help.bj.cn/api/CityCode.XLS
 https://cdn.heweather.com/china-city-list.txt 城市代码表
 #天气每隔10分钟更新一次，可谓聊胜于无
+#如果遇到时间不准确，或者是utc时间，请看下面
+找到项目里面的_init_.py文件，找到下面
+def get_time_unix():
+    return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
+改成
+ return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
+ 或者
+ return int((datetime.datetime.utcnow() + datetime.timedelta(hours=8)).timestamp())
+请自行测试那一条适用，导致这个原因是docker环境或者主机环境时区问题影响,每个设备不能同时照顾
 
 ## 其他
 我也是修改的，没有利益关系，如有其它冲突，请告诉
