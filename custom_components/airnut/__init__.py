@@ -35,7 +35,7 @@ CONF_NIGHT_END_HOUR = "night_end_hour"
 CONF_IS_NIGHT_UPDATE = "is_night_update"
 HOST_IP = "0.0.0.0"
 CONF_WEATHE_CODE = "weathe_code"
-SCAN_INTERVAL = datetime.timedelta(seconds=600)
+SCAN_INTERVAL = datetime.timedelta(seconds=120)
 ZERO_TIME = datetime.datetime.fromtimestamp(0)
 weathestate= 0
 weathe_status = ""
@@ -208,7 +208,7 @@ class AirnutSocketServer:
     
     def deal_read_sockets(self, read_sockets):
         #接收数据
-        #volume_msg = {"common": {"code": 0, "protocol": "get_weather"}, "param": {}}
+        detect_msg = {"common": {"device": "Fun_pm25", "protocol": "detect"}, "param": {"fromport": 8023, "airid": 1010695, "fromhost": "192.168.1.32"}}
         global weathestate
         check_msg = {"common": {"code": 0, "protocol": "get_weather"}, "param": {"weather": "weathercode", "time": get_time_unix()}}
         check_msg=json.dumps(check_msg)
@@ -227,8 +227,9 @@ class AirnutSocketServer:
                     _LOGGER.info("Client (%s) connected", socket_ip_dict[sockfd])
                     try:
                         #连接首先发送一次对时
-                        #sockfd.send(self.object_to_json_data(volume_msg))
                         sockfd.send(self.object_to_json_data(check_msg))
+                        time.sleep(15)
+                        sockfd.send(self.object_to_json_data(detect_msg))
                     except OSError as e:
                         _LOGGER.error("Client error 1 %s", e)
                         sockfd.shutdown(2)
@@ -266,6 +267,11 @@ class AirnutSocketServer:
                                 ATTR_TIME: get_time(),
                             }
                             _LOGGER.debug("ip_data_dict %s", ip_data_dict)
+                        if (jsonData is not None and
+                            jsonData["common"]["protocol"] == "heartbeat"):
+                            #持续检测，持续亮屏，风扇问题晚上很吵
+                            #sock.send(self.object_to_json_data(detect_msg))
+                            continue
     def deal_write_sockets(self, write_sockets):
         #发送数据
         global socket_ip_dict
