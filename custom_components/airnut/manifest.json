@@ -1,9 +1,10 @@
 {
-  "domain": "airnut",
-  "name": "Fun",
-  "documentation": "https://github.com/home-assistant/core",
+  "domain": "airnut_fun",
+  "name": "Airnut Fun",
+  "documentation": "https://github.com/zllikey/AirnutFun",
+  "issue_tracker": "https://github.com/zllikey/AirnutFun/issues",
   "dependencies": [],
   "codeowners": [],
   "requirements": [],
-  "version": "2.0.1"
+  "version": "2.0.2"
 }
