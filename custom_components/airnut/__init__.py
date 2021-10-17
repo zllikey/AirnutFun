@@ -108,10 +108,7 @@ def func_weather():
         if datayesorno:
             print(jsonData['weather'])
             weathe_status = jsonData['weather']
-            try:
-                weathestate = wet_dataA[jsonData['weather']]
-            except:
-                continue
+            weathestate = wet_dataA[jsonData['weather']]
             errcount = 0
             time.sleep(600)
         else:
