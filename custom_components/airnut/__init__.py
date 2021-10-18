@@ -75,7 +75,7 @@ def setup(hass, config):
     run_weather = threading.Thread(target=func_weather)  #新建天气循环线程
     run_weather.start()
     
-    server = AirnutSocketServer(night_start_hour, night_end_hour, is_night_update, scan_interval,weathe_code)
+    server = AirnutSocketServer(night_start_hour, night_end_hour, is_night_update, scan_interval,weathe_code,config)
 
     hass.data[DOMAIN] = {
         'server': server
@@ -147,18 +147,19 @@ async def async_unload_entry(hass, entry):
 
 class AirnutSocketServer:
 
-    def __init__(self, night_start_hour, night_end_hour, is_night_update, scan_interval,weathe_code):
+    def __init__(self, night_start_hour, night_end_hour, is_night_update, scan_interval,weathe_code,config):
         self._lastUpdateTime = ZERO_TIME
         self._night_start_hour = night_start_hour.strftime("%H%M%S")
         self._night_end_hour = night_end_hour.strftime("%H%M%S")
         self._is_night_update = is_night_update
         self._scan_interval = scan_interval
         self._weathe_code = weathe_code
+        self._config = config
 
         self._socketServer = socket(AF_INET, SOCK_STREAM)
         try:
             self._socketServer.bind((HOST_IP, 10512))
-            self._socketServer.listen(10)
+            self._socketServer.listen(3)
         except OSError as e:
             _LOGGER.error("server got %s", e)
             pass
@@ -272,17 +273,15 @@ class AirnutSocketServer:
                             _LOGGER.debug("ip_data_dict %s", ip_data_dict)
                         if (jsonData is not None and
                             jsonData["common"]["protocol"] == "heartbeat"):
-                            #持续检测，持续亮屏，风扇问题晚上很吵
-                            #sock.send(self.object_to_json_data(detect_msg))
+                            #心跳一次更新一次时间和天气
+                            sock.send(self.object_to_json_data(check_msg))
                             continue
     def deal_write_sockets(self, write_sockets):
         #发送数据
+        #持续检测，持续亮屏，风扇问题晚上很吵 ，调整 SCAN_INTERVAL = datetime.timedelta(seconds=60)  里面的数字
         global socket_ip_dict
         global weathestate
-        check_msg = {"common": {"code": 0, "protocol": "get_weather"}, "param": {"weather": "weathercode", "time": get_time_unix()}}
-        check_msg=json.dumps(check_msg)
-        check_msg=check_msg.replace("weathercode",str(weathestate))
-        check_msg=json.loads(check_msg)
+        check_msg = {"common": {"device": "Fun_pm25", "protocol": "detect"}, "param": {"fromport": 8023, "airid": 1010695, "fromhost": "192.168.1.32"}}
         for sock in write_sockets:
             if sock == self._socketServer:
                 continue

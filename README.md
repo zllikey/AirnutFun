@@ -6,6 +6,11 @@
 2. 用[Easylink app](https://www.mxchip.com/easylink/)连接好WiFi后(空气果亮绿灯即连接成功)，双击退出WiFi连接模式。
 3. 通过hacs安装，或者复制文件到custom_components
 4. 进行如下配置
+###
+1. 夜间是否更新   is_night_update: False  这功能已经实现，可正常使用
+2. 默认情况如下，开启夜间更新时，24小时更新，关闭夜间更新时，指定时间段不触发检测pm2.5信息
+3. 检测时间 由 SCAN_INTERVAL = datetime.timedelta(seconds=120)  控制,需要间隔多久自己修改,默认2分钟
+4. 想一直亮屏可以修改为1分钟或者更低(触发一次更新pm2.5，会持续亮屏1-2分钟)
 
 ```
 # 这个是必须有的
