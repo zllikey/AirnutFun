@@ -1,9 +1,9 @@
 {
   "domain": "airnut",
-  "name": "Fun",
+  "name": "Airnut Fun",
   "documentation": "https://github.com/zllikey/AirnutFun",
   "dependencies": [],
   "codeowners": [],
   "requirements": [],
-  "version": "2.0.5"
+  "version": "2.0.6"
 }

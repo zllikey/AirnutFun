@@ -93,11 +93,11 @@ def func_weather():
     wet_dataA={"晴":0,"阴":1,"多云":1,"雨":3,"阵雨":3,"雷阵雨":3,"雷阵雨伴有冰雹":3,"雨夹雪":6,"小雨":3,"中雨":3,"大雨":3,"暴雨":3,"大暴雨":3,"特大暴雨":3,"阵雪":5,"小雪":5,"中雪":5,"大雪":5,"暴雪":5,"雾":2,"冻雨":6,"沙尘暴":2,"小雨转中雨":3,"中雨转大雨":3,"大雨转暴雨":3,"暴雨转大暴雨":3,"大暴雨转特大暴雨":3,"小雪转中雪":5,"中雪转大雪":5,"大雪转暴雪":5,"浮沉":2,"扬沙":2,"强沙尘暴":2,"霾":2}
     header = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36'}
     while True:
-        res = requests.get('https://api.help.bj.cn/apis/weather/?id='+str(weathe_code),headers=header)
-        #print('https://api.help.bj.cn/apis/weather/?id='+str(weathe_code))
-        res.encoding='utf-8'
         datayesorno = False
         try:
+            res = requests.get('https://api.help.bj.cn/apis/weather/?id='+str(weathe_code),headers=header)
+            #print('https://api.help.bj.cn/apis/weather/?id='+str(weathe_code))
+            res.encoding='utf-8'
             if res.status_code==200:
                 jsonData = res.json()
                 jsonwt = jsonData['weather']
@@ -159,7 +159,7 @@ class AirnutSocketServer:
         self._socketServer = socket(AF_INET, SOCK_STREAM)
         try:
             self._socketServer.bind((HOST_IP, 10512))
-            self._socketServer.listen(3)
+            self._socketServer.listen(5)
         except OSError as e:
             _LOGGER.error("server got %s", e)
             pass
@@ -212,7 +212,7 @@ class AirnutSocketServer:
     
     def deal_read_sockets(self, read_sockets):
         #接收数据
-        detect_msg = {"common": {"device": "Fun_pm25", "protocol": "detect"}, "param": {"fromport": 8023, "airid": 1010695, "fromhost": "192.168.1.32"}}
+        detect_msg = {"common": {"device": "Fun_pm25", "protocol": "detect"}, "param": {"fromport": 8023, "airid": 1010695, "fromhost": "one"}}
         global weathestate
         check_msg = {"common": {"code": 0, "protocol": "get_weather"}, "param": {"weather": "weathercode", "time": get_time_unix()}}
         check_msg=json.dumps(check_msg)
@@ -281,7 +281,7 @@ class AirnutSocketServer:
         #持续检测，持续亮屏，风扇问题晚上很吵 ，调整 SCAN_INTERVAL = datetime.timedelta(seconds=60)  里面的数字
         global socket_ip_dict
         global weathestate
-        check_msg = {"common": {"device": "Fun_pm25", "protocol": "detect"}, "param": {"fromport": 8023, "airid": 1010695, "fromhost": "192.168.1.32"}}
+        check_msg = {"common": {"device": "Fun_pm25", "protocol": "detect"}, "param": {"fromport": 8023, "airid": 1010695, "fromhost": "interval"}}
         for sock in write_sockets:
             if sock == self._socketServer:
                 continue
