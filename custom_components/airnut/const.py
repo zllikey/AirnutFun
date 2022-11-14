@@ -21,7 +21,7 @@ MEASUREMENT_UNITE_DICT = {
     ATTR_HUMIDITY: "%",
     ATTR_PM25: "μg/m³",
     ATTR_BATTERY: "%",
-    ATTR_WEATHE: "",
+    ATTR_WEATHE: None
 }
 
 # Defaults
